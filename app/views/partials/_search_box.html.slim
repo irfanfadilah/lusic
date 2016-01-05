@@ -1,0 +1,6 @@
+= form_tag search_songs_path, remote: true, method: :get, class: "navbar-form navbar-left", role: "search"
+  .input-group
+    = text_field_tag :q, nil, class: "form-control", placeholder: "Search Song", autocomplete: "off"
+    span.input-group-btn
+      = button_tag class: "btn btn-default" do
+        span.glyphicon.glyphicon-music aria-hidden="true"

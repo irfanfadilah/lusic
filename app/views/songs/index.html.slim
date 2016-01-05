@@ -1,14 +1,25 @@
 .row
   .col-md-6
-    ul.list-unstyled
-      - @files.each do |file|
-        li = link_to file, songs_path(song: file), remote: true, method: :post
+    #song-list
+      = render "list", files: @files
   .col-md-6
-    - if cookies[:admin].eql? "true"
+    - if discjockey?
       audio id="player" controls=""
         source id="source" src=(@current.file) type="audio/mpeg"
-      hr
-    h1 Playlist
+    - elsif audience?
+      = form_tag upload_songs_path, multipart: true
+        = file_field_tag "song[]", accept: ".mp3", multiple: true, require: true
+        = submit_tag "Upload"
+    hr
+    / Playing
+    ul.list-inline
+      li: h4.glyphicon.glyphicon-play-circle aria-hidden="true"
+      li: h3 Playing
+    span style="padding-left:20px;" = @current.title
+    / Playlist
+    ul.list-inline
+      li: h4.glyphicon.glyphicon-list-alt aria-hidden="true"
+      li: h3 Playlist
     ol id="playlist"
       - @songs_in_playlist.each do |song|
         = render "song", song: song

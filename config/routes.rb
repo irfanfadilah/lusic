@@ -3,6 +3,11 @@ Rails.application.routes.draw do
   root to: 'songs#index'
 
   resources :songs, only: [:index, :create] do
+    collection do
+      get 'mode'
+      get 'search'
+      post 'upload'
+    end
     member do
       get 'next'
     end

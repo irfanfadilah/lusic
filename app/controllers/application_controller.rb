@@ -2,9 +2,9 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_action :set_cookies
+  before_action :set_mode
 
-  def set_cookies
-    cookies[:admin] = false if cookies[:admin].blank?
+  def set_mode
+    cookies[:mode] = "audience" if cookies[:mode].blank?
   end
 end

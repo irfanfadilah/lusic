@@ -9,11 +9,10 @@ App.song = App.cable.subscriptions.create "SongChannel",
     # Called when there's incoming data on the websocket for this channel
     if data['next']
       # Next Song
-      console.log data['next']['current']['id']
       current = data['next']['current']['id']
       $("##{data['next']['song_elem']}").slideUp()
       $("#source").attr "src", data['next']['current']['file']
-      if Cookies.get("admin") == "true"
+      if Cookies.get("mode") == "discjockey"
         $("#player")[0].load()
         $("#player")[0].play()
       setTimeout ->
@@ -23,3 +22,6 @@ App.song = App.cable.subscriptions.create "SongChannel",
     else if data['song']
       # Add Song
       $("#playlist").append data['song']
+    else if data['list']
+      # Refresh Song List
+      $("#song-list").html data['list']

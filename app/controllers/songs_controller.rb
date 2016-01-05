@@ -1,6 +1,6 @@
 class SongsController < ApplicationController
   before_action :set_song, only: [:next]
-  before_action :list_all_files, only: [:index, :next]
+  before_action :list_all_files, only: [:index, :next, :search]
 
   # GET /songs
   # GET /songs.json
@@ -64,6 +64,36 @@ class SongsController < ApplicationController
     @current = decide_song
     NextSongBroadcastJob.perform_later(@song.slug, @current)
     respond_to { |format| format.js }
+  end
+
+  # Upload song to local server
+  def upload
+    flash = if params[:song].present?
+      params[:song].each { |song| SongUploader.new.store!(song) }
+      list_all_files
+      SongListBroadcastJob.perform_later(@files)
+      { notice: "#{params[:song].length} song(s) added successfully!" }
+    else
+      { alert: "Please select one or more songs to be uploaded!" }
+    end
+    redirect_to root_path, flash
+  end
+
+  # Search songs and return it to user
+  def search
+    @query = params[:q]
+    @files = @files.select { |song| song.downcase.include? @query.downcase } if @query.present?
+    respond_to { |format| format.js }
+  end
+
+  # Switch mode
+  def mode
+    cookies[:mode] = if cookies[:mode].eql? "discjockey"
+      mode = "Audience"; "audience"
+    elsif cookies[:mode].eql? "audience"
+      mode = "DiscJockey"; "discjockey"
+    end
+    redirect_to root_path, notice: "Switched to #{mode} Mode"
   end
 
   private

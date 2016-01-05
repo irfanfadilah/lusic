@@ -1,6 +1,10 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-body {
-  padding-top: 25px;
+.navbar-static-top {
+  margin-bottom: 19px;
+}
+
+audio {
+  width: 100%;
 }
