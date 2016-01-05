@@ -1,0 +1,25 @@
+.row
+  .col-md-6
+    ul.list-unstyled
+      - @files.each do |file|
+        li = link_to file, songs_path(song: file), remote: true, method: :post
+  .col-md-6
+    - if cookies[:admin].eql? "true"
+      audio id="player" controls=""
+        source id="source" src=(@current.file) type="audio/mpeg"
+      hr
+    h1 Playlist
+    ol id="playlist"
+      - @songs_in_playlist.each do |song|
+        = render "song", song: song
+
+javascript:
+  // Current song
+  var current = "#{@current.id}";
+  // Add label to current song
+  $("##{@current.title.parameterize}").append('<span class="label label-primary">Now Playing</span>');
+  // Play next song on ended
+  $("#player").on("ended", function(){
+    $.get("/songs/"+current+"/next", {}, {}, "script");
+    current = parseInt(current) + 1;
+  });
